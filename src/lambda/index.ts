@@ -27,7 +27,7 @@ export const handler = async (event: SQSEvent) => {
   
     const body = await response.Body?.transformToString();
     console.log(
-      `Simple Lambda - File ${objectKey}, was upload to ${bucketName} with this body: ${body}`
+      `Lambda - File ${objectKey}, was upload to ${bucketName} with this body: ${body}`
     );
   }
 };

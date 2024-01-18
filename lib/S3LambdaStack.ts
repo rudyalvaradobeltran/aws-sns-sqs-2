@@ -11,25 +11,25 @@ import { SnsDestination } from 'aws-cdk-lib/aws-s3-notifications';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { SqsSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 
-export class BatchS3LambdaStack extends cdk.Stack {
+export class S3LambdaStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const s3Bucket = new Bucket(this, 'batch-s3-bucket', {
-      bucketName: 'batch-s3-bucket',
+    const s3Bucket = new Bucket(this, 's3-bucket', {
+      bucketName: 's3-bucket',
       autoDeleteObjects: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
-    const snsTopic = new Topic(this, "batch-sns-topic");
+    const snsTopic = new Topic(this, "sns-topic");
 
     s3Bucket.addEventNotification(EventType.OBJECT_CREATED, new SnsDestination(snsTopic));
 
-    const sqsFailedEventQueue = new Queue(this, 'batch-failed-sqs-event-queue', {
+    const sqsFailedEventQueue = new Queue(this, 'failed-sqs-event-queue', {
       retentionPeriod: cdk.Duration.minutes(5)
     });
 
-    const sqsEventQueue = new Queue(this, 'batch-sqs-event-queue', {
+    const sqsEventQueue = new Queue(this, 'sqs-event-queue', {
       deadLetterQueue: {
         queue: sqsFailedEventQueue,
         maxReceiveCount: 3
@@ -38,8 +38,8 @@ export class BatchS3LambdaStack extends cdk.Stack {
     
     snsTopic.addSubscription(new SqsSubscription(sqsEventQueue));
 
-    const lambda = new NodejsFunction(this, 'batch-lambda', {
-      entry: (join(__dirname, '..', 'src', 'batch-lambda', 'index.ts')),
+    const lambda = new NodejsFunction(this, 'lambda', {
+      entry: (join(__dirname, '..', 'src', 'lambda', 'index.ts')),
     });
 
     const sqsSource = new SqsEventSource(sqsEventQueue, {
@@ -48,7 +48,7 @@ export class BatchS3LambdaStack extends cdk.Stack {
     });
 
     lambda.addToRolePolicy(new PolicyStatement({
-      sid: "batchS3BucketLambdaPermission",
+      sid: "S3BucketLambdaPermission",
       resources: [s3Bucket.arnForObjects("*")],
       effect: Effect.ALLOW,
       actions: ["s3:GetObject"]

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { BatchS3LambdaStack } from '../lib/batchS3LambdaStack';
+import { S3LambdaStack } from '../lib/S3LambdaStack';
 
 const app = new cdk.App();
-new BatchS3LambdaStack(app, 'BatchS3LambdaStack');
+new S3LambdaStack(app, 'S3LambdaStack');
