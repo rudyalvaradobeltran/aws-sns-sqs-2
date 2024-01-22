@@ -15,8 +15,8 @@ export class S3LambdaStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const s3Bucket = new Bucket(this, 's3-bucket', {
-      bucketName: 's3-bucket',
+    const s3Bucket = new Bucket(this, 'new-s3-bucket', {
+      bucketName: 'new-s3-bucket',
       autoDeleteObjects: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
