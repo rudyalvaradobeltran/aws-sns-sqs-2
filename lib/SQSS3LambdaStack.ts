@@ -1,5 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
-import { Bucket } from 'aws-cdk-lib/aws-s3';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { EventType } from 'aws-cdk-lib/aws-s3';
@@ -11,14 +11,14 @@ import { SnsDestination } from 'aws-cdk-lib/aws-s3-notifications';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { SqsSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 
-export class S3LambdaStack extends cdk.Stack {
+export class SQSS3LambdaStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const s3Bucket = new Bucket(this, 'new-s3-bucket', {
-      bucketName: 'new-s3-bucket',
-      autoDeleteObjects: true,
-      removalPolicy: cdk.RemovalPolicy.DESTROY
+    const s3Bucket = new s3.Bucket(this, 's3-bucket', {
+      bucketName: 'example-st-s3-bucket',
+      versioned: false,
+      encryption: s3.BucketEncryption.S3_MANAGED
     });
 
     const snsTopic = new Topic(this, "sns-topic");
@@ -48,7 +48,7 @@ export class S3LambdaStack extends cdk.Stack {
     });
 
     lambda.addToRolePolicy(new PolicyStatement({
-      sid: "S3BucketLambdaPermission",
+      sid: "SQSS3BucketLambdaPermission",
       resources: [s3Bucket.arnForObjects("*")],
       effect: Effect.ALLOW,
       actions: ["s3:GetObject"]

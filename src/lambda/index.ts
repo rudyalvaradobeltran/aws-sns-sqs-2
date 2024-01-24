@@ -4,6 +4,10 @@ import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 const s3Client = new S3Client();
 
 export const handler = async (event: SQSEvent) => {
+
+  console.log("Let's see what's going on");
+  console.log(event.Records);
+
   for (const record of event.Records) {
     const randomBool = Math.random() >= 0.5;
     if (!randomBool) {

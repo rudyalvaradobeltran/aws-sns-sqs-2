@@ -15,8 +15,12 @@ The lambda function includes a boolean that has a 50% chance of failure. If the 
 
 ## Upload file to S3 bucket
 
-`aws s3 cp example.txt s3://aws-sqs-sns-bucket`
+`aws s3 cp example.txt s3://example-st-s3-bucket`
 
 ## AWS diagram
 
 ![Diagram](image.png)
+
+## Extra help for development
+
+[CDK S3 Bucket already exists error](https://repost.aws/knowledge-center/cdk-already-exists-error)
